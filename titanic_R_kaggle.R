@@ -34,6 +34,7 @@ HousePrices <- setClass(
     numerical_feature_names = "character",
     non_numerical_feature_names = "character",
     feature_names_num = "character",
+    feature_names_num_drop = "character",
     is_one_hot_encoder = "logical",
     is_with_log1p_SalePrice = "logical"
     
@@ -53,6 +54,7 @@ HousePrices <- setClass(
     numerical_feature_names = c(),
     non_numerical_feature_names = c(),
     feature_names_num = c(),
+    feature_names_num_drop = c(),
     is_one_hot_encoder = F,
     is_with_log1p_SalePrice = F
   )
@@ -279,7 +281,6 @@ setMethod(f="feature_mapping_to_numerical_values",
           signature="HousePrices",
           definition=function(theObject, df)
           {
-            ith <- 1
             for(feature in theObject@non_numerical_feature_names)
             {
               # if(feature == "classLabel")
@@ -306,6 +307,30 @@ setMethod(f="feature_mapping_to_numerical_values",
           }
 )
 
+setGeneric(name="feature_names_num_drop",
+           def=function(theObject, df)
+           {
+             standardGeneric("feature_names_num_drop")
+           }
+)
+
+setMethod(f="feature_names_num_drop",
+          signature="HousePrices",
+          definition=function(theObject, df)
+          {
+            feature_names_num_drop <- vector("character")
+            for(feature in theObject@feature_names_num)
+            {
+              if(length(sort(unique(df[[feature]]))) > 2L)
+              {
+                feature_names_num_drop <- c(feature_names_num_drop, feature)
+              }
+            }
+            return(feature_names_num_drop)
+          }
+)
+    
+    
 setGeneric(name="feature_names_num",
            def=function(theObject, df)
            {
@@ -340,7 +365,7 @@ setMethod(f="drop_features_num",
           signature="HousePrices",
           definition=function(theObject, df)
           {
-            df <- df[, !(names(df) %in% theObject@feature_names_num)]
+            df <- df[, !(names(df) %in% theObject@feature_names_num_drop)]
             return(df)
           }
 )
@@ -580,7 +605,6 @@ setMethod(f="prepare_data",
             numerical_feature_log <- numerical_feature_logical(theObject, df)
             theObject@non_numerical_feature_names <- extract_non_numerical_features(theObject, numerical_feature_log)
             df <- extract_numerical_value_from_character(theObject, df)
-            # browser()
             numerical_feature_log <- numerical_feature_logical(theObject, df)
             theObject@non_numerical_feature_names <- extract_non_numerical_features(theObject, numerical_feature_log)
             theObject@numerical_feature_names <- extract_numerical_features(theObject, numerical_feature_log)
@@ -590,6 +614,7 @@ setMethod(f="prepare_data",
             {
               theObject@feature_names_num <- feature_names_num(theObject, df)
               df <- feature_mapping_to_numerical_values(theObject, df)
+              theObject@feature_names_num_drop <- feature_names_num_drop(theObject, df)
               if(theObject@is_one_hot_encoder)
               {
                 df <- drop_features_num(theObject, df)
@@ -609,7 +634,7 @@ if(interactive())
   
   # Create instance of class
   house_prices <- HousePrices()  # , is_with_log1p_SalePrice=T)
-  house_prices@is_one_hot_encoder <- F
+  house_prices@is_one_hot_encoder <- T
   house_prices@is_with_log1p_SalePrice <- F
   
   # house_prices <- new("HousePrices", is_one_hot_encoder=T)#, is_with_log1p_SalePrice=T)
@@ -896,7 +921,7 @@ if(interactive())
       # )
       
       # Classification problem
-      xgb_cv <- xgb.cv(xgb_params, data=dtrain, nrounds=nrounds, nfold=5, stratified=F, early_stopping_rounds=25, verbose=2)
+      xgb_cv <- xgb.cv(xgb_params, data=dtrain, nrounds=nrounds, nfold=5, stratified=F, early_stopping_rounds=100, verbose=2)
       # bst <- xgboost(data = dtrain, max_depth = 6, eta = 0.001, nrounds = 2, objective = "binary:logistic", verbose = 2)
       # xgboost(data = dtrain, max_depth = 6, eta = 0.2, nrounds = 20, objective = "binary:logistic", verbose = 2)
       
