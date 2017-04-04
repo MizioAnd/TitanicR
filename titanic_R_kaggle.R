@@ -884,7 +884,7 @@ if(interactive())
       my_colsample_bytree <- list(colsample_bytree=c((1:10)*0.1))
       my_num_parallel_tree <- list(num_parallel_tree=c(1:10))
       # nrounds <- length(my_num_parallel_tree$num_parallel_tree)
-      nrounds <- 1000
+      nrounds <- 10000
       xgb_params <- list(
         seed = 1,
         colsample_bytree = my_colsample_bytree$colsample_bytree[3],
@@ -922,7 +922,7 @@ if(interactive())
       # )
       
       # Classification problem
-      xgb_cv <- xgb.cv(xgb_params, data=dtrain, nrounds=nrounds, nfold=5, stratified=F, early_stopping_rounds=100, verbose=2)
+      xgb_cv <- xgb.cv(xgb_params, data=dtrain, nrounds=nrounds, nfold=5, stratified=F, early_stopping_rounds=400, verbose=2)
       # bst <- xgboost(data = dtrain, max_depth = 6, eta = 0.001, nrounds = 2, objective = "binary:logistic", verbose = 2)
       # xgboost(data = dtrain, max_depth = 6, eta = 0.2, nrounds = 20, objective = "binary:logistic", verbose = 2)
       
@@ -938,13 +938,14 @@ if(interactive())
       # test_partition_index[train_partition_index] <- T
       test_partition_index <- which(!test_partition_index)
       dtest_bench = dtrain[test_partition_index,]
-      watchlist <- list(train=dtrain_bench, test=dtest_bench)
-      # watchlist <- list(train=dtrain, test=dtest)
+      # watchlist <- list(train=dtrain_bench, test=dtest_bench)
+      watchlist <- list(train=dtrain)#, test=dtest)
       
       # gbdt <- xgb.train(xgb_params, dtrain, nrounds=as.integer(best_nrounds))
       # gs <- xgb.train(data=dtest_bench, max_depth=2, eta=0.02, nrounds=nrounds, watchlist=watchlist, objective = "binary:logistic")
-      gbdt <- xgb.train(params=xgb_params, data=dtrain, nrounds=as.integer(best_nrounds), watchlist=watchlist, print_every_n=1L, early_stopping_rounds=35)
-          
+      gbdt <- xgb.train(params=xgb_params, data=dtrain, watchlist=watchlist, nrounds=as.integer(best_nrounds), print_every_n=1L, early_stopping_rounds=300)
+      # gbdt <- xgb.train(params=xgb_params, data=dtrain, watchlist=watchlist, nrounds=nrounds, print_every_n=1L, early_stopping_rounds=400)
+      
       # gbdt <- xgb.train(xgb_params, data=dtrain, watchlist=watchlist, print_every_n=1, early_stopping_rounds=35, nrounds=nrounds,
       #                   callbacks=list(cb.reset.parameters(my_num_parallel_tree)))
       # gbdt <- xgb.train(xgb_params, dtrain, nrounds=as.integer(best_nrounds))
