@@ -283,11 +283,12 @@ setMethod(f="feature_mapping_to_numerical_values",
           {
             for(feature in theObject@non_numerical_feature_names)
             {
-              # if(feature == "classLabel")
-              # {
-              #   browser()
-              # }
-              
+              if(feature == 'Embarked')
+              {
+                embarked_logical_NA <- df$Embarked == ""
+                df[which(embarked_logical_NA), feature] <- NA 
+                
+              }
               # Check that feature var consist of more than 3 labels before dummy labels are assigned
               if(length(sort(unique(df[[feature]]))) > 2L)
               {
