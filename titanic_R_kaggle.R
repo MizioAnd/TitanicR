@@ -22,9 +22,9 @@ library(readr)
 # library(Formula)
 # library(VIM)
 
-HousePrices <- setClass(
+Titanic <- setClass(
   # Set name of class
-  "HousePrices",
+  "Titanic",
   
   # Define slots
   slots = c(
@@ -68,7 +68,7 @@ setGeneric(name="merge_train_and_test_dataframe",
 )
 
 setMethod(f="merge_train_and_test_dataframe",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df, df_test)
           {
             # Remove classLabel (stored in y_train)
@@ -86,7 +86,7 @@ setGeneric(name="drop_variable_before_preparation",
 )
 
 setMethod(f="drop_variable_before_preparation",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             # Drop features that have certain procentage of missing values considering the training data and test, 
@@ -118,7 +118,7 @@ setGeneric(name="clean_data",
 )
 
 setMethod(f="clean_data",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             if(sum(is.na(df)) > 0)
@@ -149,7 +149,7 @@ setGeneric(name="numerical_feature_logical_incl_hidden_num",
 )
 
 setMethod(f="numerical_feature_logical_incl_hidden_num",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df, numerical_features)
           {
             for(feature in rownames(numerical_features))
@@ -174,7 +174,7 @@ setGeneric(name="numerical_feature_logical",
 )
 
 setMethod(f="numerical_feature_logical",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             # Numeric data types in R: 'numeric', 'integer'
@@ -199,7 +199,7 @@ setGeneric(name="extract_numerical_features",
 )
 
 setMethod(f="extract_numerical_features",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, numerical_features)
           {
             mask_index <- which(numerical_features$logical.dim.df..2..)
@@ -215,7 +215,7 @@ setGeneric(name="extract_non_numerical_features",
 )
 
 setMethod(f="extract_non_numerical_features",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, numerical_features)
           {
             mask_index <- which(numerical_features$logical.dim.df..2.. == F)
@@ -230,7 +230,7 @@ setGeneric(name="encode_labels_in_numeric_format",
            }
 )
 setMethod(f="encode_labels_in_numeric_format",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df, feature)
           {
             # Encode categorical features as integers
@@ -249,7 +249,7 @@ setGeneric(name="one_hot_encoder",
 )
 
 setMethod(f="one_hot_encoder",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df, feature)
           {
             levels <- sort(unique(df[[feature]]))
@@ -278,7 +278,7 @@ setGeneric(name="feature_mapping_to_numerical_values",
 )
 
 setMethod(f="feature_mapping_to_numerical_values",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             for(feature in theObject@non_numerical_feature_names)
@@ -340,7 +340,7 @@ setGeneric(name="feature_names_num_drop",
 )
 
 setMethod(f="feature_names_num_drop",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             feature_names_num_drop <- vector("character")
@@ -364,7 +364,7 @@ setGeneric(name="feature_names_num",
 )
 
 setMethod(f="feature_names_num",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             feature_names_num <- vector("character", length=length(theObject@non_numerical_feature_names))
@@ -395,7 +395,7 @@ setGeneric(name="drop_features_num",
 )
 
 setMethod(f="drop_features_num",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             df <- df[, !(names(df) %in% theObject@feature_names_num_drop)]
@@ -411,7 +411,7 @@ setGeneric(name="get_is_one_hot_encoder",
 )
 
 setMethod(f="get_is_one_hot_encoder",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject)
           {
             return(theObject@is_one_hot_encoder)
@@ -426,7 +426,7 @@ setGeneric(name="set_is_one_hot_encoder",
 )
 
 setMethod(f="set_is_one_hot_encoder",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, is_one_hot_encoder)
           {
             theObject@is_one_hot_encoder <- is_one_hot_encoder
@@ -442,7 +442,7 @@ setGeneric(name="skew_correction",
 )
 
 setMethod(f="skew_correction",
-          signature=c("HousePrices", "data.frame"),
+          signature=c("Titanic", "data.frame"),
           definition=function(theObject, df)
           {
             skewed_feats <- lapply(df, function(x) skewness(x[!is.na(x)]))  # compute skewness
@@ -454,7 +454,7 @@ setMethod(f="skew_correction",
 )
 
 setMethod(f="skew_correction",
-          signature=c("HousePrices", "integer"),
+          signature=c("Titanic", "integer"),
           definition=function(theObject, df)
           {
             # browser()
@@ -475,7 +475,7 @@ setGeneric(name="feature_engineering",
 )
 
 setMethod(f="feature_engineering",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             is_skewness_correction_for_all_features <-  1
@@ -511,7 +511,7 @@ setGeneric(name="feature_scaling",
 )
 
 setMethod(f="feature_scaling",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             is_scaling_for_all_features <-  1
@@ -547,7 +547,7 @@ setGeneric(name="plot_histogram",
 )
 
 setMethod(f="plot_histogram",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df, feature_col_index)
           {
             return(ggplot(data=df[feature_col_index], aes(x=factor(df[[feature_col_index]]))) + 
@@ -563,7 +563,7 @@ setGeneric(name="plot_function",
 )
 
 setMethod(f="plot_function",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df, function_to_plot, feature_column_indices, ncol=2)
           {
             feature_plots <- list()
@@ -584,7 +584,7 @@ setGeneric(name="plot_density",
 )
 
 setMethod(f="plot_density",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df, feature_col_index, target_column_name)
           {
             # Todo: check if commented version has error
@@ -607,7 +607,7 @@ setGeneric(name="extract_numerical_value_from_character",
            )
 
 setMethod(f="extract_numerical_value_from_character",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             # Extract numerical value residing in character object using regex
@@ -631,7 +631,7 @@ setGeneric(name="drop_features",
            )
 
 setMethod(f="drop_features",
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             for(feature in theObject@numerical_feature_names)
@@ -653,7 +653,7 @@ setGeneric(name="prepare_data",
 )
 
 setMethod(f="prepare_data", 
-          signature="HousePrices",
+          signature="Titanic",
           definition=function(theObject, df)
           {
             df <- drop_variable_before_preparation(theObject, df)
@@ -689,24 +689,23 @@ if(interactive())
   options(error=recover, show.error.locations=TRUE, warn=2)
   
   # Create instance of class
-  house_prices <- HousePrices()  # , is_with_log1p_SalePrice=T)
-  house_prices@is_one_hot_encoder <- T
-  house_prices@is_with_log1p_SalePrice <- F
+  titanic <- Titanic()  # , is_with_log1p_SalePrice=T)
+  titanic@is_one_hot_encoder <- T
+  titanic@is_with_log1p_SalePrice <- F
   
-  # house_prices <- new("HousePrices", is_one_hot_encoder=T)#, is_with_log1p_SalePrice=T)
-  is.object(house_prices)
-  isS4(house_prices)
+  is.object(titanic)
+  isS4(titanic)
   
   # Create object to load data
-  df <- slot(house_prices, "df") 
-  df_test <- slot(house_prices, "df_test")
+  df <- slot(titanic, "df") 
+  df_test <- slot(titanic, "df_test")
   
   ## Prepare data
   # Merge training and test data together
   
   y_train_prepared <- df$Survived
   passengerId_df_test <- df_test$PassengerId
-  train_test_merged <- merge_train_and_test_dataframe(house_prices, df, df_test)
+  train_test_merged <- merge_train_and_test_dataframe(titanic, df, df_test)
 
   is_kill_all_men <- 1
   if(is_kill_all_men)
@@ -719,7 +718,7 @@ if(interactive())
     
   # Number of rows in training data for later splitting
   rows_in_train <- nrow(df)
-  train_test_merged_prepared <- prepare_data(house_prices, train_test_merged)
+  train_test_merged_prepared <- prepare_data(titanic, train_test_merged)
   
   is_exclude_duplicates <- 0
   if(is_exclude_duplicates)
@@ -762,7 +761,7 @@ if(interactive())
   if(is_get_unique_labels_of_test)
   {
     df_test_prep <- df_test
-    df_test_prep <- prepare_data(house_prices, df_test_prep)
+    df_test_prep <- prepare_data(titanic, df_test_prep)
     unique_feature_labels_test <- colnames(df_test_prep)
     overlap_unique_features <- unique_feature_labels_test %in% colnames(train_test_merged_prepared)
     unique_feature_labels_test <- unique_feature_labels_test[overlap_unique_features]
@@ -773,14 +772,14 @@ if(interactive())
   }
 
   # Extracting numerical feature columns
-  train_test_merged_numerical_feature_log <- numerical_feature_logical(house_prices, train_test_merged)
-  train_test_merged_numerical_feature_log_hidden_nums <- numerical_feature_logical_incl_hidden_num(house_prices, df, train_test_merged_numerical_feature_log)
-  train_test_merged_non_numerical_features <- extract_non_numerical_features(house_prices, train_test_merged_numerical_feature_log_hidden_nums)
+  train_test_merged_numerical_feature_log <- numerical_feature_logical(titanic, train_test_merged)
+  train_test_merged_numerical_feature_log_hidden_nums <- numerical_feature_logical_incl_hidden_num(titanic, df, train_test_merged_numerical_feature_log)
+  train_test_merged_non_numerical_features <- extract_non_numerical_features(titanic, train_test_merged_numerical_feature_log_hidden_nums)
 
-  train_test_merged_prepared_numerical_feature_log <- numerical_feature_logical(house_prices, train_test_merged_prepared)
-  train_test_merged_prepared_numerical_features <- extract_numerical_features(house_prices, train_test_merged_prepared_numerical_feature_log)
+  train_test_merged_prepared_numerical_feature_log <- numerical_feature_logical(titanic, train_test_merged_prepared)
+  train_test_merged_prepared_numerical_features <- extract_numerical_features(titanic, train_test_merged_prepared_numerical_feature_log)
   # Extracting non numerical feature columns
-  train_test_merged_prepared_non_numerical_features <- extract_non_numerical_features(house_prices, train_test_merged_prepared_numerical_feature_log)
+  train_test_merged_prepared_non_numerical_features <- extract_non_numerical_features(titanic, train_test_merged_prepared_numerical_feature_log)
   train_test_merged_prepared_only_categorical <- train_test_merged_prepared[, train_test_merged_prepared_non_numerical_features]
   train_test_merged_prepared <- train_test_merged_prepared[, train_test_merged_prepared_numerical_features]
   
@@ -858,12 +857,12 @@ if(interactive())
       
       #Bar plots
       # Categorical features are in total 38
-      plot_function(house_prices, df[, train_test_merged_non_numerical_features], plot_histogram, 2, 2)
-      # plot_function(house_prices, df[, train_test_merged_non_numerical_features], plot_histogram, 5:8, 2)
-      # plot_function(house_prices, df[, train_test_merged_non_numerical_features], plot_histogram, 9:11, 2)
-      # plot_function(house_prices, df[, train_test_merged_prepared_non_numerical_features], plot_histogram, 14, 2)
-      # plot_function(house_prices, df[, train_test_merged_prepared_non_numerical_features], plot_histogram, 14:17, 2)
-      # plot_function(house_prices, df[, train_test_merged_prepared_non_numerical_features], plot_histogram, 18:21, 2)
+      plot_function(titanic, df[, train_test_merged_non_numerical_features], plot_histogram, 2, 2)
+      # plot_function(titanic, df[, train_test_merged_non_numerical_features], plot_histogram, 5:8, 2)
+      # plot_function(titanic, df[, train_test_merged_non_numerical_features], plot_histogram, 9:11, 2)
+      # plot_function(titanic, df[, train_test_merged_prepared_non_numerical_features], plot_histogram, 14, 2)
+      # plot_function(titanic, df[, train_test_merged_prepared_non_numerical_features], plot_histogram, 14:17, 2)
+      # plot_function(titanic, df[, train_test_merged_prepared_non_numerical_features], plot_histogram, 18:21, 2)
     }  
   }
   
@@ -871,8 +870,8 @@ if(interactive())
   if(is_test_functions)
   {
     # Testing functions
-    # numerical_feature_log <- numerical_feature_logical(house_prices, df)
-    # df_num <- extract_numerical_features(house_prices, numerical_feature_log)
+    # numerical_feature_log <- numerical_feature_logical(titanic, df)
+    # df_num <- extract_numerical_features(titanic, numerical_feature_log)
   }
   
   is_make_prediction <- 1
