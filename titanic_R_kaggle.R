@@ -97,7 +97,7 @@ setMethod(f="drop_variable_before_preparation",
             features_in_df <- names(df)
             for(feature in features_in_df)
             {
-              if(number_of_missing_values_in_features[[feature]] >= 0.3*nrow(df))
+              if(number_of_missing_values_in_features[[feature]] >= 0.3*nrow(df))  # 0.3*nrow(df))
               {
                 features_with_many_missing_values <- append(features_with_many_missing_values, feature)
               }
@@ -304,6 +304,30 @@ setMethod(f="feature_mapping_to_numerical_values",
                 df[, feature_num] <- as.integer(df[, feature] == sort(unique(df[[feature]]))[1])
               }
             }
+            
+            for(feature in theObject@numerical_feature_names)
+            {
+              # Check that feature var consist of more than 3 labels but less than 10 before dummy labels are assigned
+              if(length(sort(unique(df[[feature]]))) < 10L)
+              {
+                if(length(sort(unique(df[[feature]]))) > 2L)
+                {
+                  df <- encode_labels_in_numeric_format(theObject, df, feature)
+                  
+                  if(theObject@is_one_hot_encoder)
+                  {
+                    df <- one_hot_encoder(theObject, df, feature)
+                  }
+                } else
+                {
+                  feature_num <- paste0(feature, 'Num', collapse='')
+                  df[, feature_num] <- as.integer(df[, feature] == sort(unique(df[[feature]]))[1])
+                }
+              }
+            }
+            
+            
+                        
             return(df)
           }
 )
@@ -648,10 +672,20 @@ if(interactive())
   
   ## Prepare data
   # Merge training and test data together
+  
   y_train_prepared <- df$Survived
   passengerId_df_test <- df_test$PassengerId
   train_test_merged <- merge_train_and_test_dataframe(house_prices, df, df_test)
+
+  is_kill_all_men <- 1
+  if(is_kill_all_men)
+  {
+    # Kill all men
+    all_male_logical <- df$Sex == 'male' 
+    y_train_prepared[which(all_male_logical)] <- 0
+  }
   
+    
   # Number of rows in training data for later splitting
   rows_in_train <- nrow(df)
   train_test_merged_prepared <- prepare_data(house_prices, train_test_merged)
@@ -922,7 +956,7 @@ if(interactive())
       # )
       
       # Classification problem
-      xgb_cv <- xgb.cv(xgb_params, data=dtrain, nrounds=nrounds, nfold=5, stratified=F, early_stopping_rounds=400, verbose=2)
+      xgb_cv <- xgb.cv(xgb_params, data=dtrain, nrounds=nrounds, nfold=5, stratified=F, early_stopping_rounds=250, verbose=2)
       # bst <- xgboost(data = dtrain, max_depth = 6, eta = 0.001, nrounds = 2, objective = "binary:logistic", verbose = 2)
       # xgboost(data = dtrain, max_depth = 6, eta = 0.2, nrounds = 20, objective = "binary:logistic", verbose = 2)
       
@@ -943,7 +977,7 @@ if(interactive())
       
       # gbdt <- xgb.train(xgb_params, dtrain, nrounds=as.integer(best_nrounds))
       # gs <- xgb.train(data=dtest_bench, max_depth=2, eta=0.02, nrounds=nrounds, watchlist=watchlist, objective = "binary:logistic")
-      gbdt <- xgb.train(params=xgb_params, data=dtrain, watchlist=watchlist, nrounds=as.integer(best_nrounds), print_every_n=1L, early_stopping_rounds=300)
+      gbdt <- xgb.train(params=xgb_params, data=dtrain, watchlist=watchlist, nrounds=as.integer(best_nrounds), print_every_n=1L, early_stopping_rounds=250)
       # gbdt <- xgb.train(params=xgb_params, data=dtrain, watchlist=watchlist, nrounds=nrounds, print_every_n=1L, early_stopping_rounds=400)
       
       # gbdt <- xgb.train(xgb_params, data=dtrain, watchlist=watchlist, print_every_n=1, early_stopping_rounds=35, nrounds=nrounds,
