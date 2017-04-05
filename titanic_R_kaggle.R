@@ -375,6 +375,14 @@ setMethod(f="feature_names_num",
               feature_names_num[ith] <- feature_name_num
               ith = ith + 1
             }
+            
+            for(feature in theObject@numerical_feature_names)
+            {
+              if(length(sort(unique(df[[feature]]))) < 10L)
+              {
+                feature_names_num <- c(feature_names_num, paste0(feature, 'Num', collapse=''))
+              }
+            }
             return(feature_names_num)
           }
 )
@@ -481,7 +489,7 @@ setMethod(f="feature_engineering",
                 numerical_feature_names_of_non_modified_df <- c(theObject@feature_names_num, 
                                                                 numerical_feature_names_of_non_modified_df)
               }
-              relevant_features <- numerical_feature_names_of_non_modified_df
+              relevant_features <- numerical_feature_names_of_non_modified_df[(numerical_feature_names_of_non_modified_df %in% colnames(df))]
               df[, relevant_features] <- skew_correction(theObject, df[, relevant_features])
             } else
             {
@@ -517,7 +525,7 @@ setMethod(f="feature_scaling",
                 numerical_feature_names_of_non_modified_df <- c(theObject@feature_names_num, 
                                                                 numerical_feature_names_of_non_modified_df)
               }
-              relevant_features <- numerical_feature_names_of_non_modified_df
+              relevant_features <- numerical_feature_names_of_non_modified_df[(numerical_feature_names_of_non_modified_df %in% colnames(df))]
               df[, relevant_features] <- scale(df[, relevant_features])
             } else
             {
@@ -615,6 +623,28 @@ setMethod(f="extract_numerical_value_from_character",
           }
           )
 
+setGeneric(name="drop_features",
+           def=function(theObject, df)
+           {
+             standardGeneric("drop_features")
+           }
+           )
+
+setMethod(f="drop_features",
+          signature="HousePrices",
+          definition=function(theObject, df)
+          {
+            for(feature in theObject@numerical_feature_names)
+            {
+              if(length(sort(unique(df[[feature]]))) < 10L)
+              {
+                df[,feature] <- NULL
+              }
+            }
+            return(df)
+          }
+          )
+
 setGeneric(name="prepare_data",
            def=function(theObject, df)
            {
@@ -644,6 +674,7 @@ setMethod(f="prepare_data",
               {
                 df <- drop_features_num(theObject, df)
               }
+              df <- drop_features(theObject, df)
               df <- feature_engineering(theObject, df)
               df <- clean_data(theObject, df)
               df <- feature_scaling(theObject, df)
