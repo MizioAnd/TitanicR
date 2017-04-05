@@ -42,15 +42,8 @@ Titanic <- setClass(
   
   # Set default values
   prototype=list(
-    # df = fread('/home/mizio/Documents/Kaggle/HousePrices/train.csv', showProgress = T, data.table = FALSE),
     df = fread('/home/mizio/Documents/Kaggle/Titanic/train.csv', showProgress = T, data.table = FALSE),
-
-    # df = read.csv('/home/mizio/Documents/Kaggle/HousePrices/train.csv', stringsAsFactors = T),
-    
-    # df_test = fread('/home/mizio/Documents/Kaggle/HousePrices/test.csv', showProgress = T, data.table = FALSE),
     df_test = fread('/home/mizio/Documents/Kaggle/Titanic/test.csv', showProgress = T, data.table = FALSE),
-
-    # df_test = read.csv('/home/mizio/Documents/Kaggle/HousePrices/test.csv', stringsAsFactors = T)
     numerical_feature_names = c(),
     non_numerical_feature_names = c(),
     feature_names_num = c(),
