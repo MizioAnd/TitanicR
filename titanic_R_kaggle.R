@@ -700,7 +700,7 @@ if(interactive())
   passengerId_df_test <- df_test$PassengerId
   train_test_merged <- merge_train_and_test_dataframe(titanic, df, df_test)
 
-  is_kill_all_men <- 1
+  is_kill_all_men <- 0
   if(is_kill_all_men)
   {
     # Kill all men
@@ -726,7 +726,7 @@ if(interactive())
   # y_test_prepared <- train_test_merged_prepared[(rows_in_train + 1):dim(train_test_merged_prepared)[1],]$classLabel
 
   # Make repsentative data set by taking out 50/50 of "yes." and "no." samples.
-  is_50_50_distribution <- 1
+  is_50_50_distribution <- 0
   if(is_50_50_distribution)
   {
     number_of_yes_train <- sum(y_train_prepared)  # 214
